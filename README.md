@@ -43,7 +43,7 @@ all orchestrated through a LangGraph state machine, so each agent only does the 
   <img src="static/demo-screenshot.png" alt="TripGraph AI screenshot" width="800">
 </p>
 
-*(Add a screenshot of your running app here — drop the image into `static/` and update the path above.)*
+
 
 ---
 
