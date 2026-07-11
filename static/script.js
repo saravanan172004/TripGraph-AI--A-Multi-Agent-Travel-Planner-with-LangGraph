@@ -37,6 +37,7 @@ function hideError() {
 
 function showResult(answer, threadId) {
     latestAnswerMarkdown = answer;
+    console.log("RAW ANSWER:",answer);
 
     const resultSection = document.getElementById("resultSection");
     const resultBox = document.getElementById("resultBox");

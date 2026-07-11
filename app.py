@@ -2,7 +2,7 @@ from pathlib import Path
 import traceback
 import uvicorn
 
-from fastapi import FastAPI,Request
+from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -11,11 +11,15 @@ from pydantic import BaseModel
 
 from backend import run_travel_agent
 
+# FIX: nest_asyncio is no longer needed — backend.py doesn't call
+# asyncio.run() anywhere anymore, so there's nothing to patch around.
+
+
 BASE_DIR = Path(__file__).resolve().parent
 
 app = FastAPI(
-    title ="TripGraph AI",
-    description ="Langchain Multi-Agent Travel Planner with FASTAPI Frontend",
+    title="TripGraph AI",
+    description="Langchain Multi-Agent Travel Planner with FASTAPI Frontend",
     version="1.0.0"
 )
 
@@ -33,16 +37,16 @@ templates = Jinja2Templates(
 
 class TravelRequest(BaseModel):
     message: str
-    thread_id: str | None=None
+    thread_id: str | None = None
 
 
-@app.get("/",response_class=HTMLResponse)  
+@app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     return templates.TemplateResponse(
         request=request,
         name="index.html",
         context={}
-    )  
+    )
 
 
 @app.post("/api/travel")
@@ -59,7 +63,9 @@ async def travel_planner(request_data: TravelRequest):
                 }
             )
 
-        result = run_travel_agent(
+        # FIX: run_travel_agent is now async — must be awaited, not called
+        # as a blocking sync function inside an async route.
+        result = await run_travel_agent(
             user_input=user_message,
             thread_id=request_data.thread_id
         )
